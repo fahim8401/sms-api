@@ -39,6 +39,11 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'api_key' => User::generateApiKey(),
+            'balance' => 0,
+            'rate' => config('app.sms_cost_default', 0.30),
+            'role' => 'user',
+            'status' => 'active',
         ]);
 
         event(new Registered($user));

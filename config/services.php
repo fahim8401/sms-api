@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'digitalsquare' => [
+        'apikey' => env('DIGITALSQUARE_APIKEY'),
+        'secret' => env('DIGITALSQUARE_SECRET'),
+        'baseurl' => env('DIGITALSQUARE_BASEURL'),
+    ],
+
 ];

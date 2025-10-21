@@ -123,4 +123,16 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | SMS Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Default SMS cost per message.
+    |
+    */
+
+    'sms_cost_default' => env('SMS_COST_DEFAULT', 0.30),
+    'pdf_storage' => env('PDF_STORAGE', 'storage/invoices'),
+
 ];
