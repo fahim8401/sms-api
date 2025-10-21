@@ -53,9 +53,9 @@ class InitialDataSeeder extends Seeder
         // Create default gateway
         Gateway::create([
             'name' => 'DigitalSquare',
-            'api_url' => config('services.digitalsquare.baseurl', 'http://isms.digitalsquare.ltd:5683'),
-            'api_key' => config('services.digitalsquare.apikey', 'your_api_key_here'),
-            'secret_key' => config('services.digitalsquare.secret', 'your_secret_here'),
+            'api_url' => env('DIGITALSQUARE_BASEURL', 'http://isms.digitalsquare.ltd:5683'),
+            'api_key' => env('DIGITALSQUARE_APIKEY', 'your_api_key_here'),
+            'secret_key' => env('DIGITALSQUARE_SECRET', 'your_secret_here'),
             'status' => 'active',
         ]);
     }

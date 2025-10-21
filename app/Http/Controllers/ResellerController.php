@@ -11,14 +11,14 @@ use Illuminate\Support\Facades\Hash;
 
 class ResellerController extends Controller
 {
-    public function __construct()
+    /**
+     * Check if user is reseller or admin
+     */
+    protected function checkAccess()
     {
-        $this->middleware(function ($request, $next) {
-            if (!in_array(auth()->user()->role, ['reseller', 'admin'])) {
-                abort(403, 'Unauthorized access');
-            }
-            return $next($request);
-        });
+        if (!in_array(auth()->user()->role, ['reseller', 'admin'])) {
+            abort(403, 'Unauthorized access');
+        }
     }
 
     /**
@@ -26,6 +26,7 @@ class ResellerController extends Controller
      */
     public function dashboard()
     {
+        $this->checkAccess();
         $user = auth()->user();
 
         $stats = [
@@ -48,6 +49,7 @@ class ResellerController extends Controller
      */
     public function subUsers()
     {
+        $this->checkAccess();
         $subUsers = auth()->user()->subUsers()->withCount('smsLogs')->paginate(20);
 
         return view('reseller.sub-users', compact('subUsers'));
@@ -58,6 +60,7 @@ class ResellerController extends Controller
      */
     public function createSubUser(Request $request)
     {
+        $this->checkAccess();
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
@@ -113,6 +116,7 @@ class ResellerController extends Controller
      */
     public function transferCredit(Request $request, $id)
     {
+        $this->checkAccess();
         $request->validate([
             'amount' => 'required|numeric|min:0',
         ]);
@@ -154,6 +158,7 @@ class ResellerController extends Controller
      */
     public function invoices()
     {
+        $this->checkAccess();
         return view('reseller.invoices');
     }
 
@@ -162,6 +167,7 @@ class ResellerController extends Controller
      */
     public function generateInvoice(Request $request)
     {
+        $this->checkAccess();
         $request->validate([
             'month' => 'required|date_format:Y-m',
         ]);

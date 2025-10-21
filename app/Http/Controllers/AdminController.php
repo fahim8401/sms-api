@@ -11,14 +11,14 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
-    public function __construct()
+    /**
+     * Check if user is admin
+     */
+    protected function checkAdmin()
     {
-        $this->middleware(function ($request, $next) {
-            if (auth()->user()->role !== 'admin') {
-                abort(403, 'Unauthorized access');
-            }
-            return $next($request);
-        });
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized access');
+        }
     }
 
     /**
@@ -26,6 +26,8 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
+        $this->checkAdmin();
+
         $stats = [
             'total_users' => User::count(),
             'total_sms' => SmsLog::count(),
@@ -45,6 +47,7 @@ class AdminController extends Controller
      */
     public function logs(Request $request)
     {
+        $this->checkAdmin();
         $query = SmsLog::with('user');
 
         if ($request->has('user_id') && $request->user_id) {
@@ -70,6 +73,7 @@ class AdminController extends Controller
      */
     public function users()
     {
+        $this->checkAdmin();
         $users = User::withCount('smsLogs', 'transactions')->paginate(20);
 
         return view('admin.users', compact('users'));
@@ -80,6 +84,7 @@ class AdminController extends Controller
      */
     public function editUser($id)
     {
+        $this->checkAdmin();
         $user = User::findOrFail($id);
         $resellers = User::where('role', 'reseller')->get();
 
@@ -91,6 +96,7 @@ class AdminController extends Controller
      */
     public function updateUser(Request $request, $id)
     {
+        $this->checkAdmin();
         $user = User::findOrFail($id);
 
         $request->validate([
@@ -125,6 +131,7 @@ class AdminController extends Controller
      */
     public function createUser(Request $request)
     {
+        $this->checkAdmin();
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
@@ -154,6 +161,7 @@ class AdminController extends Controller
      */
     public function addCredit(Request $request, $id)
     {
+        $this->checkAdmin();
         $request->validate([
             'amount' => 'required|numeric|min:0',
             'description' => 'required|string',
@@ -178,6 +186,7 @@ class AdminController extends Controller
      */
     public function settings()
     {
+        $this->checkAdmin();
         $gateways = Gateway::all();
 
         return view('admin.settings', compact('gateways'));
@@ -188,6 +197,7 @@ class AdminController extends Controller
      */
     public function updateGateway(Request $request, $id)
     {
+        $this->checkAdmin();
         $request->validate([
             'name' => 'required|string',
             'api_url' => 'required|url',
@@ -207,6 +217,7 @@ class AdminController extends Controller
      */
     public function createGateway(Request $request)
     {
+        $this->checkAdmin();
         $request->validate([
             'name' => 'required|string',
             'api_url' => 'required|url',
